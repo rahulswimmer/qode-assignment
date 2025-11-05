@@ -1,15 +1,4 @@
-# Core scraping + browser automation
-selenium==4.24.0
-webdriver-manager==4.0.2
-fake-useragent==1.5.1
-
-# HTML parsing
-beautifulsoup4==4.12.3
-lxml==5.3.0
-
-# Data handling + export
-pandas==2.2.3
-pyarrow==17.0.0
-
-# Optional utilities (safe to keep)
-requests==2.32.3
+selenium
+pandas
+ntscraper
+webdriver-manager
