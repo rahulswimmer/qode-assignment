@@ -9,17 +9,16 @@ It’s split into two scripts, one for entry and other for analytics.
 
 - **`init.py`** (Entry file)
   - Creates a file called `tweets_ism.parquet`
-  - Each row is a tweet-like record in the **last 24 hours**
+  - Each row is a tweet-like record in the last 24 hours
   - Fields: `username`, `timestamp`, `content`, `engagement_metrics`, `mentions`, `hashtags`
-  - Includes some **Indian-language** and emoji content to prove Unicode handling
+  - Includes some Indian-language and emoji content to prove Unicode handling
   - Deduplicates on (`username`, `timestamp`, `content`) before saving
 
 - **`analytics.py`** (analysis process)
   - Loads `tweets_ism.parquet`
-  - Does **feature engineering** (bullish words, hashtag check, tweet length, engagement score)
-  - Builds a **per-tweet signal** (0–1-ish)
-  - Aggregates to **15-minute buckets** and computes a **95% confidence interval**
-  - (Optional) builds a **TF-IDF** matrix to show text → vector conversion
+  - Does feature engineering (bullish words, hashtag check, tweet length, engagement score)
+  - Builds a per-tweet signal (0–1~)
+  - Aggregates to 15-minute buckets and computes a 95% confidence interval
   - Plots the aggregated signal
 
 ---
@@ -28,8 +27,8 @@ It’s split into two scripts, one for entry and other for analytics.
 
 The original requirement was to scrape tweets (e.g. with `snscrape` or Selenium), but scraping didn’t work reliably in the environment.  
 Then I resorted to selenium web-driver, due to its login activity issues, it was acting funny.          
-So we **simulated** tweets using `faker` + domain hashtags (`#nifty50`, `#sensex`, `#intraday`, `#banknifty`).  
-This keeps the *shape* of the data the same, so downstream text/NLP steps can still be demonstrated.
+So we simulated tweets using `faker` + domain hashtags (`#nifty50`, `#sensex`, `#intraday`, `#banknifty`).  
+This keeps the shape of the data the same, so downstream text/NLP steps can still be demonstrated.
 
 ---
 
