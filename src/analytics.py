@@ -6,15 +6,11 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-# ---------------------------------------------------------------------
-# CONFIG
-# ---------------------------------------------------------------------
 INPUT_PARQUET = "synthetic_tweets.parquet"
-RESAMPLE_FREQ = "15min"   # aggregate every 15 minutes
-MAX_TFIDF_FEATURES = 2000 # to keep memory low
+RESAMPLE_FREQ = "15min" 
+MAX_TFIDF_FEATURES = 2000 
 
 
-# domain vocabulary to detect bullish / market-related content
 BULLISH_WORDS = [
     "up", "rally", "breakout", "bullish", "buy", "long",
     "तेज़", "ऊपर", "ऊपर जा रहा", "high", "gain", "green"
@@ -24,9 +20,7 @@ HASHTAGS = ["#nifty50", "#nifty", "#banknifty", "#sensex", "#intraday"]
 
 def load_tweets(path: str) -> pd.DataFrame:
     df = pd.read_parquet(path)
-    # ensure timestamp is datetime
     df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True, errors="coerce")
-    # drop rows without timestamp
     df = df.dropna(subset=["timestamp"])
     return df
 
@@ -87,17 +81,13 @@ def add_tfidf_features(df: pd.DataFrame, max_features: int = 2000) -> pd.DataFra
         ngram_range=(1, 2)
     )
     tfidf_matrix = vectorizer.fit_transform(df["content"].fillna(""))
-    # we won't join the sparse matrix into df (too big),
-    # but we can return it if needed.
     return df, tfidf_matrix, vectorizer
 
 def build_per_tweet_signal(df: pd.DataFrame) -> pd.DataFrame:
-    # normalize some components
     df["norm_bullish"] = df["feat_bullish"].clip(0, 5) / 5.0
     df["norm_len"] = df["feat_len"].clip(1, 280) / 280.0
     df["norm_eng"] = (df["feat_engagement"] / 2000.0).clip(0, 1)
 
-    # weighted sum
     df["tweet_signal"] = (
         0.5 * df["norm_bullish"] +
         0.3 * df["feat_has_nifty"] +
@@ -139,9 +129,6 @@ def plot_signal(agg_df: pd.DataFrame):
     plt.show()
 
 
-# ---------------------------------------------------------------------
-# MAIN
-# ---------------------------------------------------------------------
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     parquet_path = os.path.join(script_dir, "tweets_ism.parquet")
