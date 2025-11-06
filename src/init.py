@@ -2,12 +2,16 @@ from faker import Faker
 import random
 import os
 import pandas as pd
+import sys
 import subprocess
 from datetime import datetime, timedelta, timezone
 
 # ---- CONFIG ----
 HASHTAG_LIST = ["#nifty50", "#sensex", "#intraday", "#banknifty"]
 MENTION_LIST = ["@rahul", "@analyst101", "@traderjoe", "@deskbot", "@quantclub"]
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_PARQUET = os.path.join(SCRIPT_DIR, "tweets_ism.parquet")
 
 INDIAN_TWEET_CONTENT = [
     "भारत में आज बाज़ार तेज़ है।", 
@@ -68,7 +72,7 @@ def main():
                 if rows:
                     try:
                         rows_df = pd.DataFrame(rows)
-                        rows_df.to_parquet("tweets_ism.parquet")
+                        rows_df.to_parquet(OUTPUT_PARQUET, index=False)
 
                         rows_df = rows_df.drop_duplicates(subset=["username","timestamp","content"])
                     except Exception as e:
@@ -87,6 +91,6 @@ if __name__ == "__main__":
         script_dir = os.path.dirname(os.path.abspath(__file__))
         analytics_path = os.path.join(script_dir, "analytics.py")
         print("\nData generation complete — now running analytics.py...\n")
-        subprocess.run(["python", analytics_path], check=True)
+        subprocess.run([sys.executable, analytics_path], check=True)
     except Exception as e:
         print(f"Could not run analytics.py automatically: {e}")
