@@ -39,11 +39,6 @@ def has_nifty_tag(text: str) -> int:
 
 
 def engagement_to_score(val) -> float:
-    """
-    Our parquet had engagement_metrics as dicts like:
-    {"likes": 120, "retweets": 30, "replies": 4}
-    We'll convert it into a single scalar.
-    """
     if val is None:
         return 0.0
    
@@ -72,10 +67,6 @@ def add_handcrafted_features(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def add_tfidf_features(df: pd.DataFrame, max_features: int = 2000) -> pd.DataFrame:
-    """
-    For the assignment, we can show we *can* convert text to numeric vectors.
-    We'll just compute TF-IDF and keep the feature matrix separate.
-    """
     vectorizer = TfidfVectorizer(
         max_features=max_features,
         ngram_range=(1, 2)
